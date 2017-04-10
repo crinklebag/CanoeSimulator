@@ -7,6 +7,7 @@ public class BoatProximityTrigger : MonoBehaviour {
     PlayerUIController uiController;
 
     [SerializeField] string side;
+    [SerializeField] GameObject otherCollider;
 
     GameObject foundInteractable;
     bool canBreak;
@@ -24,16 +25,23 @@ public class BoatProximityTrigger : MonoBehaviour {
         {
             if (canBreak && this.GetComponentInParent<MenuMovement>().IsAttacking() && !foundInteractable.GetComponentInParent<BreakableObject>().IsBroken())
             {
-                foundInteractable.GetComponentInParent<BreakableObject>().BreakObject();
                 canBreak = false;
                 StopAllCoroutines();
                 StartCoroutine(BreakDelay());
+                foundInteractable.GetComponentInParent<BreakableObject>().BreakObject();
+                foundInteractable = null;
             }
         }
 
-        if (foundInteractable != null && foundInteractable.GetComponentInParent<BreakableObject>().IsBroken()) {
+        if (foundInteractable == null || foundInteractable.GetComponentInParent<BreakableObject>().IsBroken()) {
             // Turn off UI
+            otherCollider.SetActive(true);
             uiController.ToggleOffPressA();
+            canBreak = false;
+        } else {
+            otherCollider.SetActive(false);
+            uiController.ToggleOnPressA();
+            // canBreak = true;
         }
 	}
 
@@ -41,6 +49,7 @@ public class BoatProximityTrigger : MonoBehaviour {
     {
         if (other.CompareTag("Weak Log") && !other.GetComponentInParent<BreakableObject>().IsBroken())
         {
+            otherCollider.SetActive(false);
             canBreak = true;
         }
     }
@@ -57,6 +66,7 @@ public class BoatProximityTrigger : MonoBehaviour {
     void OnTriggerExit(Collider other) {
         if (other.CompareTag("Weak Log") && !other.GetComponentInParent<BreakableObject>().IsBroken()) {
             // Turn Off UI
+            otherCollider.SetActive(true);
             foundInteractable = null;
             uiController.ToggleOffPressA();
             canBreak = false;

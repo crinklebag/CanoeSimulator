@@ -10,8 +10,6 @@ public class MenuMovement : MonoBehaviour {
 
     [Header("Movement Variables")]
     [SerializeField] GameObject playerCharacter;
-    [SerializeField] GameObject paddlePivot;
-    [SerializeField] GameObject paddle;
     [SerializeField] int playerID;
     [SerializeField] PaddleData paddleDataRaft;
     [SerializeField] PaddleData paddleDataCanoe;
@@ -30,7 +28,6 @@ public class MenuMovement : MonoBehaviour {
 
     Player player;
     GameObject boat;
-    Quaternion initRot;
     string selectedBoat = "canoe";
     int dir = 0;
     int previousPaddleSide;
@@ -45,16 +42,11 @@ public class MenuMovement : MonoBehaviour {
 
     // reference to the last player found within reach
     GameObject foundPlayer = null;
-
-    //creating an selectable object.
-    [SerializeField]  GameObject attackDisplay;
-    Collider[] hitColliders;
-
+    
     // Use this for initialization
     void Awake() {
         player = ReInput.players.GetPlayer(playerID);
         boat = this.gameObject;
-        if (paddle != null) initRot = paddle.transform.localRotation;
     }
 
     // Update is called once per frame
@@ -78,11 +70,11 @@ public class MenuMovement : MonoBehaviour {
         }
 
         // Move Camera Up
-        if (player.GetAxisRaw("Vertical") > 0) {
+        if (player.GetAxisRaw("Vertical 1") > 0) {
 
             Camera.main.GetComponent<SmoothFollowCSharp>().RotateUp();
 
-        } else if (player.GetAxisRaw("Vertical") < 0) {
+        } else if (player.GetAxisRaw("Vertical 1") < 0) {
             Camera.main.GetComponent<SmoothFollowCSharp>().RotateDown();
         }
 
@@ -94,7 +86,7 @@ public class MenuMovement : MonoBehaviour {
     void Attack()
     {
         // Check if attacking
-        if (player.GetButtonDown("Attack") && !attacking && canAttack)
+        if (player.GetButtonDown("Attack") && !attacking)
         {
             if (triggerSide == "right") { SetPaddleSide(1); }
             else if (triggerSide == "left") { SetPaddleSide(0); }
@@ -194,13 +186,6 @@ public class MenuMovement : MonoBehaviour {
                 paddleRotationTimer = 0;
             }
         }
-    }
-
-    Vector3 GetPaddlePosition()
-    {
-        Bounds paddleBounds = paddle.GetComponentInChildren<MeshFilter>().sharedMesh.bounds;
-
-        return paddle.transform.position - paddle.transform.up.normalized * paddleBounds.extents.z * 0.33f;
     }
 
     IEnumerator WaitForInput() {

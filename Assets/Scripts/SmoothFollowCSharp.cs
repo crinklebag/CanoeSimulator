@@ -53,26 +53,8 @@ public class SmoothFollowCSharp : MonoBehaviour
         // Convert the angle into a rotation
         Quaternion currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
-        // Set the position of the camera on the x-z plane to:
-        // distance meters behind the target
-        transform.position = target.position;
-        //Debug.Log("target Position: " + target.position);
-        //Debug.Break();
-        
-        //if (transform.position.z > 0) { transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z * -1); }
-
-        //// Set the height of the camera
         transform.position = new Vector3(transform.position.x, currentHeight, transform.position.z);
 
-        // Do not let the player camera get below the specified minimum height
-        if (transform.position.y < 5) { this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(transform.position.x, 5, transform.position.z), Time.deltaTime * 10); }
-
-        //// Always look at the target - don't roate if you are looking down towards the player
-        if (height < 15)
-        {
-            transform.position -= target.rotation * Vector3.forward * distance;
-            transform.LookAt(target);
-        }
     }
 
     public void RotateUp() {

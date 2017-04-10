@@ -33,15 +33,13 @@ public class PlayerUIController : MonoBehaviour {
 
     public void ToggleOnPressA() {
         // Only turn it on if the other UI is off
-        if (!pressXUI.activeSelf) {
-            pressAUI.SetActive(true);
-        }
+        // Debug.Log("Turning A On");
+        if (!pressAUI.activeSelf) { pressAUI.SetActive(true); }
     }
 
     public void ToggleOffPressA()
     {
-        if (!pressAUI.activeSelf) {
-            pressAUI.SetActive(false);
-        }
+        // Debug.Log("Turning A Off");
+        if (pressAUI.activeSelf) { pressAUI.SetActive(false); }
     }
 }

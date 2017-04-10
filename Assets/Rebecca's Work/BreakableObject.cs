@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class BreakableObject : MonoBehaviour {
 
+    LevelOne gc;
+
     [SerializeField] GameObject brokenObject;
     [SerializeField] GameObject unbrokenObject;
     bool broken = false;
 
 	// Use this for initialization
 	void Start () {
-		
+        gc = GameObject.FindGameObjectWithTag("GameController").GetComponent<LevelOne>();
 	}
 	
 	// Update is called once per frame
@@ -19,7 +21,7 @@ public class BreakableObject : MonoBehaviour {
 	}
 
     public void BreakObject() {
-        Debug.Log("Break Object");
+        // Debug.Log("Break Object");
         GameObject brokenPieces = Instantiate(brokenObject, this.transform.position, this.transform.rotation) as GameObject;
         RealisticBuoyancy[] pieces = brokenPieces.GetComponentsInChildren<RealisticBuoyancy>();
 
@@ -31,11 +33,13 @@ public class BreakableObject : MonoBehaviour {
                 buoyancyObject.GetComponent<RealisticBuoyancy>().setup();
                 // Fix the water level
                 buoyancyObject.GetComponent<RealisticBuoyancy>().waterLevelOverride = RealisticWaterPhysics.currentWaterLevel;
+                Destroy(buoyancyObject.gameObject, 1.0f);
             }
         }
 
         Destroy(unbrokenObject);
         broken = true;
+        gc.GetComponent<LevelOne>().CheckWaterfallLogs();
     }
 
     public bool IsBroken() {
