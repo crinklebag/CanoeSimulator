@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 140cb1b5648d52142ad05742061ec921
+timeCreated: 1491789554
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: KG Summer Sunshine
+  fontNames:
+  - KG Summer Sunshine
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

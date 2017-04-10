@@ -58,14 +58,21 @@ public class SmoothFollowCSharp : MonoBehaviour
         transform.position = target.position;
         //Debug.Log("target Position: " + target.position);
         //Debug.Break();
-        transform.position -= currentRotation * Vector3.forward * distance;
+        
         //if (transform.position.z > 0) { transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z * -1); }
 
         //// Set the height of the camera
         transform.position = new Vector3(transform.position.x, currentHeight, transform.position.z);
 
-        //// Always look at the target
-        transform.LookAt(target);
+        // Do not let the player camera get below the specified minimum height
+        if (transform.position.y < 5) { this.transform.position = Vector3.Lerp(this.transform.position, new Vector3(transform.position.x, 5, transform.position.z), Time.deltaTime * 10); }
+
+        //// Always look at the target - don't roate if you are looking down towards the player
+        if (height < 15)
+        {
+            transform.position -= target.rotation * Vector3.forward * distance;
+            transform.LookAt(target);
+        }
     }
 
     public void RotateUp() {

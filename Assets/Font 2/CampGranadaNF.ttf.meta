@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 73a6cf83b5f5e744fb106772a12d0b5c
+timeCreated: 1491789561
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Camp Granada NF
+  fontNames:
+  - Camp Granada NF
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

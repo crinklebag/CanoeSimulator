@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 16f8d42b03fa3924d9b392c1043ca975
+timeCreated: 1491789553
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: KG Summer Sunshine Blackout
+  fontNames:
+  - KG Summer Sunshine Blackout
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

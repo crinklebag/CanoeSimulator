@@ -8,14 +8,6 @@ public class MenuMovement : MonoBehaviour {
     
     [SerializeField] InstructionPanel instructionsPanel;
 
-    [Header("Boat Selection Variables")]
-    [SerializeField] Image[] boatUI;
-    [SerializeField] GameObject boatSelectedUI;
-    [SerializeField] GameObject pressAUI;
-    [SerializeField] GameObject pressBUI;
-    [SerializeField] GameObject[] boatBody;
-    [SerializeField] GameObject boatContents;
-
     [Header("Movement Variables")]
     [SerializeField] GameObject playerCharacter;
     [SerializeField] GameObject paddlePivot;
@@ -32,6 +24,7 @@ public class MenuMovement : MonoBehaviour {
     [SerializeField] AudioSource boatHit;
     [SerializeField] ParticleSystem splashForwardParticles;
     [SerializeField] ParticleSystem splashBackwardParticles;
+    [SerializeField] ParticleSystem dustParticle;
     [SerializeField] float splashBackDelay = 0.5f;
     [SerializeField] float splashForwardDelay = 0.25f;
 
@@ -43,10 +36,12 @@ public class MenuMovement : MonoBehaviour {
     int previousPaddleSide;
     int previousPaddleDirection;
     float paddleRotationTimer = 0;
-    bool canAttack = false;
+    string triggerSide = "";
+    bool canAttack = true;
     bool canPaddle = true;
     bool canInput = true;
     bool selectingBoat = true;
+    bool attacking = false;
 
     // reference to the last player found within reach
     GameObject foundPlayer = null;
@@ -82,7 +77,7 @@ public class MenuMovement : MonoBehaviour {
             previousPaddleDirection = 0;
         }
 
-        // Mover Camera Up
+        // Move Camera Up
         if (player.GetAxisRaw("Vertical") > 0) {
 
             Camera.main.GetComponent<SmoothFollowCSharp>().RotateUp();
@@ -91,7 +86,40 @@ public class MenuMovement : MonoBehaviour {
             Camera.main.GetComponent<SmoothFollowCSharp>().RotateDown();
         }
 
+        // Check to see if player is attacking
+        Attack();
         RotatePaddle();
+    }
+
+    void Attack()
+    {
+        // Check if attacking
+        if (player.GetButtonDown("Attack") && !attacking && canAttack)
+        {
+            if (triggerSide == "right") { SetPaddleSide(1); }
+            else if (triggerSide == "left") { SetPaddleSide(0); }
+
+            // Check Wich side the player is on and switch it if need be
+            playerCharacter.GetComponent<Animator>().SetTrigger("Attacking");
+
+            // Set Attacking so the paddle knows to play particles and audio
+            StopCoroutine(AttackDelay());
+            attacking = true;
+            StartCoroutine(AttackDelay());
+        }
+    }
+
+    IEnumerator AttackDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        // Play Audio and particle effects on the player paddle
+        dustParticle.Play();
+        boatHit.Play();
+
+        yield return new WaitForSeconds(0.9f);
+
+        attacking = false;
     }
 
     void MoveCanoe(int paddleSide, int paddleDirection)
@@ -168,44 +196,6 @@ public class MenuMovement : MonoBehaviour {
         }
     }
 
-    void CanAttack()
-    {
-        attackDisplay.SetActive(false);
-
-        hitColliders = Physics.OverlapSphere(GetPaddlePosition(), paddleDataCanoe.reach);
-
-        for (int i = 0; i < hitColliders.Length; i++)
-        {
-            if (hitColliders[i].gameObject != this.gameObject && hitColliders[i].GetComponent<MenuBoat>())
-            {
-                attackDisplay.SetActive(true);
-                foundPlayer = hitColliders[i].gameObject;
-                Debug.Log("Can Attack");
-            }
-        }
-
-        // Check now to see if the attack notice is on or off - if it is on turn on the other players attack radius
-        if (attackDisplay.activeSelf)
-        {
-            // If the current state is end(3) or off(0), activate
-            if (foundPlayer != null && (foundPlayer.GetComponent<PlayerAttackUIController>().GetState() == 0 || foundPlayer.GetComponent<PlayerAttackUIController>().GetState() == 3))
-            {
-                foundPlayer.GetComponent<PlayerAttackUIController>().ActivateRadius();
-                Debug.Log("Activate The Attack UI");
-            }
-        }
-        else
-        {
-            // If the current state is start(1) or pulse(2), end it
-            if (foundPlayer != null && (foundPlayer.GetComponent<PlayerAttackUIController>().GetState() == 1 || foundPlayer.GetComponent<PlayerAttackUIController>().GetState() == 2))
-            {
-                foundPlayer.GetComponent<PlayerAttackUIController>().DeactivateRadius();
-                Debug.Log("Deactivate The Attack UI");
-            }
-        }
-
-    }
-
     Vector3 GetPaddlePosition()
     {
         Bounds paddleBounds = paddle.GetComponentInChildren<MeshFilter>().sharedMesh.bounds;
@@ -252,8 +242,11 @@ public class MenuMovement : MonoBehaviour {
         }
     }
 
-    public void AllowAttack() {
-        canAttack = true;
+    public void AllowAttack(string side) {
+        triggerSide = side;
     }
 
+    public bool IsAttacking() {
+        return attacking;
+    }
 }

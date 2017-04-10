@@ -86,44 +86,15 @@ public class SecondMenuController : MonoBehaviour {
             boatOne.GetComponentInChildren<Rigidbody>().AddForce(boatOne.transform.forward * teamOneForceValue, ForceMode.Impulse);
             boatTwo.GetComponentInChildren<Rigidbody>().AddForce(boatOne.transform.forward * teamTwoForceValue, ForceMode.Impulse);
 
-            boatOne.GetComponent<MenuMovement>().AllowAttack();
-            boatTwo.GetComponent<MenuMovement>().AllowAttack();
+            // boatOne.GetComponent<MenuMovement>().AllowAttack();
+            // boatTwo.GetComponent<MenuMovement>().AllowAttack();
         }
-
-        if (canMove) {
-            SetUpLevelSelect();
-        }
+        
 	}
 
     /* Instructions */
     void ShowInstructions() {
         instructionPanel.SetActive(true);
-    }
-
-    /* Level Selection */
-    void SetUpLevelSelect() {
-        // Debug.Log("Setting Up Level");
-        float distCovered = (Time.time - startTime) * speed;
-        float fracJourney = distCovered / journeyLength;
-        // Move up the Camera
-        Camera.main.transform.position = Vector3.Lerp(camStartMarker, camEndMarker, fracJourney);
-        // Move up the boards
-        boardOne.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(boardOneStartMarker, boardOneEndMarker, fracJourney * 1.5f);
-        boardTwo.GetComponent<RectTransform>().anchoredPosition = Vector3.Lerp(boardTwoStartMarker, boardTwoEndMarker, fracJourney * 1.5f);
-
-        // Start The Instructions
-        if (!instructionsStarted) {
-            instructionPanel.GetComponent<InstructionPanel>().StartInstructions();
-            instructionsStarted = true;
-            // Debug.Log("Starting Instructions in Menu Controller");
-        }
-
-        if (fracJourney >= 0.9f) {
-            // turn on blocking wall
-            blockingWall.SetActive(true);
-            ShowInstructions();
-            // canMove = false;
-        }
     }
 
     void SetPlayerChoice(int playerID, string level) {
