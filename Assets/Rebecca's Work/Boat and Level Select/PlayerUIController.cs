@@ -17,18 +17,17 @@ public class PlayerUIController : MonoBehaviour {
 		
 	}
 
-    public void TogglePressX() {
+    public void ToggleOnPressX()
+    {
         // Only turn it on if the other UI is off
-        if (!pressAUI.activeSelf) {
-            //  If it's on turn it off
-            if (pressXUI.activeSelf) {
-                pressXUI.SetActive(false);
-            }
-            // If it is off turn it on
-            else {
-                pressXUI.SetActive(true);
-            }
-        }
+        // Debug.Log("Turning A On");
+        if (!pressXUI.activeSelf) { pressXUI.SetActive(true); }
+    }
+
+    public void ToggleOffPressX()
+    {
+        // Debug.Log("Turning A Off");
+        if (pressXUI.activeSelf) { pressXUI.SetActive(false); }
     }
 
     public void ToggleOnPressA() {

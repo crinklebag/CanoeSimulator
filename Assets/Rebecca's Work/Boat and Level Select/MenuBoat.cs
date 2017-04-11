@@ -4,12 +4,12 @@ using UnityEngine;
 using Rewired;
 
 public class MenuBoat : MonoBehaviour {
-    
 
+    PlayerUIController uiController;
 
 	// Use this for initialization
 	void Start () {
-		
+        uiController = GameObject.FindGameObjectWithTag("Canvas").GetComponent<PlayerUIController>();
 	}
 	
 	// Update is called once per frame
@@ -24,11 +24,25 @@ public class MenuBoat : MonoBehaviour {
 
 		// Debug.Log ("Colliding with: " + other);
 
-		if (other.gameObject.CompareTag ("Player")) {
-			// Debug.Log ("Players Hit");
-			this.GetComponent<AudioSource> ().Play ();
-			this.GetComponentInParent<MenuMovement> ().RumbleControllers ();
-			other.gameObject.GetComponentInParent<MenuMovement> ().RumbleControllers ();
-		}
+		if (other.gameObject.CompareTag ("Massive Log") && this.GetComponent<MenuMovement>().IsBoosting()) {
+            Debug.Log("Hit Massive Log");
+            other.gameObject.GetComponentInParent<BreakableObject>().BreakObject();
+        }
 	}
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Boost Current")) {
+            this.GetComponent<MenuMovement>().SetCanBoost(true);
+            uiController.ToggleOnPressX();
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Boost Current")) {
+            this.GetComponent<MenuMovement>().SetCanBoost(false);
+            uiController.ToggleOffPressX();
+        }
+    }
 }

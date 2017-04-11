@@ -23,8 +23,12 @@ public class MenuMovement : MonoBehaviour {
     [SerializeField] ParticleSystem splashForwardParticles;
     [SerializeField] ParticleSystem splashBackwardParticles;
     [SerializeField] ParticleSystem dustParticle;
+    [SerializeField] ParticleSystem boostParticle;
     [SerializeField] float splashBackDelay = 0.5f;
     [SerializeField] float splashForwardDelay = 0.25f;
+
+    [SerializeField]
+    float speedBoostForce = 2000f;
 
     Player player;
     GameObject boat;
@@ -39,6 +43,8 @@ public class MenuMovement : MonoBehaviour {
     bool canInput = true;
     bool selectingBoat = true;
     bool attacking = false;
+    bool boosting = false;
+    bool canBoost = false;
 
     // reference to the last player found within reach
     GameObject foundPlayer = null;
@@ -69,13 +75,17 @@ public class MenuMovement : MonoBehaviour {
             previousPaddleDirection = 0;
         }
 
-        // Move Camera Up
-        if (player.GetAxisRaw("Vertical 1") > 0) {
+        // Hit the powerup button && the boat has a powerup active
+        if (player.GetButtonDown("Powerup") && !boosting && canBoost) {
+            SpeedBoost();
+        }
 
-            Camera.main.GetComponent<SmoothFollowCSharp>().RotateUp();
-
-        } else if (player.GetAxisRaw("Vertical 1") < 0) {
-            Camera.main.GetComponent<SmoothFollowCSharp>().RotateDown();
+        if (playerCharacter) {
+            Animator playerAnimator = playerCharacter.GetComponent<Animator>();
+            if (playerAnimator)
+            {
+                playerAnimator.SetBool("Stunned", boosting);
+            }
         }
 
         // Check to see if player is attacking
@@ -188,6 +198,26 @@ public class MenuMovement : MonoBehaviour {
         }
     }
 
+    // Adding force to the boat for the speed boost
+    void SpeedBoost()
+    {
+        // Debug.Log ("Adding " + speedBoostForce + " for speedboost!");
+        gameObject.GetComponent<Rigidbody>().AddForce(-transform.forward * speedBoostForce, ForceMode.Impulse);
+        boosting = true;
+        StartCoroutine(DelaySpeedBoost());
+    }
+
+    IEnumerator DelaySpeedBoost() {
+
+        boostParticle.Play();
+
+        yield return new WaitForSeconds(1.5f);
+
+        boostParticle.Stop();
+        boosting = false;
+
+    }
+
     IEnumerator WaitForInput() {
 
         canInput = false;
@@ -233,5 +263,13 @@ public class MenuMovement : MonoBehaviour {
 
     public bool IsAttacking() {
         return attacking;
+    }
+
+    public void SetCanBoost(bool state) {
+        canBoost = true;
+    }
+
+    public bool IsBoosting() {
+        return boosting;
     }
 }

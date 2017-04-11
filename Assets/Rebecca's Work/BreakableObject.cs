@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[DisallowMultipleComponent]
 public class BreakableObject : MonoBehaviour {
 
     LevelOne gc;
 
     [SerializeField] GameObject brokenObject;
     [SerializeField] GameObject unbrokenObject;
+    [SerializeField] bool destroyable = true;
     bool broken = false;
+
+    [SerializeField] bool lastObject = false;
 
 	// Use this for initialization
 	void Start () {
@@ -22,24 +26,30 @@ public class BreakableObject : MonoBehaviour {
 
     public void BreakObject() {
         // Debug.Log("Break Object");
-        GameObject brokenPieces = Instantiate(brokenObject, this.transform.position, this.transform.rotation) as GameObject;
-        RealisticBuoyancy[] pieces = brokenPieces.GetComponentsInChildren<RealisticBuoyancy>();
-
-        if (pieces != null)
+        // Check to see if the count in the game controller is 2 - if it is then this tree can be broken
+        if (!lastObject || gc.GetFallenTrees() == 2)
         {
-            foreach (RealisticBuoyancy buoyancyObject in pieces)
-            {
-                // use the reference to set up the buoyancy of the object
-                buoyancyObject.GetComponent<RealisticBuoyancy>().setup();
-                // Fix the water level
-                buoyancyObject.GetComponent<RealisticBuoyancy>().waterLevelOverride = RealisticWaterPhysics.currentWaterLevel;
-                Destroy(buoyancyObject.gameObject, 1.0f);
-            }
-        }
+            GameObject brokenPieces = Instantiate(brokenObject, this.transform.position, this.transform.rotation) as GameObject;
+            RealisticBuoyancy[] pieces = brokenPieces.GetComponentsInChildren<RealisticBuoyancy>();
 
-        Destroy(unbrokenObject);
-        broken = true;
-        gc.GetComponent<LevelOne>().CheckWaterfallLogs();
+            if (pieces != null)
+            {
+                foreach (RealisticBuoyancy buoyancyObject in pieces)
+                {
+                    // use the reference to set up the buoyancy of the object
+                    buoyancyObject.GetComponent<RealisticBuoyancy>().setup();
+                    // Fix the water level
+                    buoyancyObject.GetComponent<RealisticBuoyancy>().waterLevelOverride = RealisticWaterPhysics.currentWaterLevel;
+                    if (destroyable) { Destroy(buoyancyObject.gameObject, 1.0f); }
+                }
+            }
+
+            Destroy(unbrokenObject);
+            broken = true;
+            gc.GetComponent<LevelOne>().CheckWaterfallLogs();
+            gc.GetComponent<LevelOne>().CheckDam();
+
+        } 
     }
 
     public bool IsBroken() {
