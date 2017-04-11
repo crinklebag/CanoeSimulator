@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public class LevelOne : MonoBehaviour {
@@ -21,6 +22,7 @@ public class LevelOne : MonoBehaviour {
     [SerializeField] GameObject[] trees;
     [SerializeField] GameObject swampMat;
     [SerializeField] GameObject dam;
+    [SerializeField] GameObject beverSpeechBubble;
     bool moveDam = false;
     bool raiseDam = false;
     float damXPos = 2;
@@ -59,7 +61,7 @@ public class LevelOne : MonoBehaviour {
     }
 
     void RaiseDam() {
-        dam.transform.localPosition = Vector3.Lerp(dam.transform.localPosition, new Vector3(dam.transform.localPosition.x, -0.2f, dam.transform.localPosition.z), Time.deltaTime * raiseWaterLevelSpeed);
+        dam.transform.localPosition = Vector3.Lerp(dam.transform.localPosition, new Vector3(dam.transform.localPosition.x, -13.5f, dam.transform.localPosition.z), Time.deltaTime * raiseWaterLevelSpeed);
     }
 
     void MoveDam() {
@@ -115,7 +117,7 @@ public class LevelOne : MonoBehaviour {
                 damXPos = -1;
                 break;
             case 3:
-                damXPos = -5;
+                damXPos = -2.5f;
                 break;
         }
 
@@ -131,6 +133,7 @@ public class LevelOne : MonoBehaviour {
             //Toggle all necessary colliders
             current.SetActive(true);
             walls.SetActive(false);
+            beverSpeechBubble.GetComponent<Text>().text = "Thanks!";
         }
     }
 

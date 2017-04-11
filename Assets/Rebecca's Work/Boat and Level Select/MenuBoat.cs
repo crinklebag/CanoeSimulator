@@ -14,19 +14,17 @@ public class MenuBoat : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.Space)) {
-            // Fix the water level
-            this.GetComponent<RealisticBuoyancy>().waterLevelOverride = 0;
-        }
+        
 	}
 
 	void OnCollisionEnter(Collision other){
 
 		// Debug.Log ("Colliding with: " + other);
 
-		if (other.gameObject.CompareTag ("Massive Log") && this.GetComponent<MenuMovement>().IsBoosting()) {
+		if (other.gameObject.CompareTag ("Massive Log")) {
             Debug.Log("Hit Massive Log");
             other.gameObject.GetComponentInParent<BreakableObject>().BreakObject();
+            uiController.PlayWin();
         }
 	}
 
@@ -34,7 +32,7 @@ public class MenuBoat : MonoBehaviour {
     {
         if (other.CompareTag("Boost Current")) {
             this.GetComponent<MenuMovement>().SetCanBoost(true);
-            uiController.ToggleOnPressX();
+            // uiController.ToggleOnPressX();
         }
     }
 
@@ -42,7 +40,7 @@ public class MenuBoat : MonoBehaviour {
     {
         if (other.CompareTag("Boost Current")) {
             this.GetComponent<MenuMovement>().SetCanBoost(false);
-            uiController.ToggleOffPressX();
+            // uiController.ToggleOffPressX();
         }
     }
 }

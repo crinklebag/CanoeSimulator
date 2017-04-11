@@ -76,15 +76,18 @@ public class MenuMovement : MonoBehaviour {
         }
 
         // Hit the powerup button && the boat has a powerup active
-        if (player.GetButtonDown("Powerup") && !boosting && canBoost) {
-            SpeedBoost();
+        if (canBoost && !boostParticle.isPlaying) {
+            boostParticle.Play();
+        }
+        else if (canBoost && boostParticle.isPlaying) {
+            boostParticle.Stop();
         }
 
         if (playerCharacter) {
             Animator playerAnimator = playerCharacter.GetComponent<Animator>();
             if (playerAnimator)
             {
-                playerAnimator.SetBool("Stunned", boosting);
+                playerAnimator.SetBool("Stunned", canBoost);
             }
         }
 
@@ -119,7 +122,7 @@ public class MenuMovement : MonoBehaviour {
         dustParticle.Play();
         boatHit.Play();
 
-        yield return new WaitForSeconds(0.9f);
+        // yield return new WaitForSeconds(0.2f);
 
         attacking = false;
     }
@@ -198,26 +201,6 @@ public class MenuMovement : MonoBehaviour {
         }
     }
 
-    // Adding force to the boat for the speed boost
-    void SpeedBoost()
-    {
-        // Debug.Log ("Adding " + speedBoostForce + " for speedboost!");
-        gameObject.GetComponent<Rigidbody>().AddForce(-transform.forward * speedBoostForce, ForceMode.Impulse);
-        boosting = true;
-        StartCoroutine(DelaySpeedBoost());
-    }
-
-    IEnumerator DelaySpeedBoost() {
-
-        boostParticle.Play();
-
-        yield return new WaitForSeconds(1.5f);
-
-        boostParticle.Stop();
-        boosting = false;
-
-    }
-
     IEnumerator WaitForInput() {
 
         canInput = false;
@@ -266,7 +249,7 @@ public class MenuMovement : MonoBehaviour {
     }
 
     public void SetCanBoost(bool state) {
-        canBoost = true;
+        canBoost = state;
     }
 
     public bool IsBoosting() {

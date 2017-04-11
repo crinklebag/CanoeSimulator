@@ -6,6 +6,7 @@ public class PlayerUIController : MonoBehaviour {
 
     [SerializeField] GameObject pressXUI;
     [SerializeField] GameObject pressAUI;
+    [SerializeField] GameObject winText;
 
 	// Use this for initialization
 	void Start () {
@@ -40,5 +41,19 @@ public class PlayerUIController : MonoBehaviour {
     {
         // Debug.Log("Turning A Off");
         if (pressAUI.activeSelf) { pressAUI.SetActive(false); }
+    }
+
+    public void PlayWin() {
+
+        StartCoroutine(Win());
+    }
+
+    IEnumerator Win() {
+
+        winText.SetActive(true);
+
+        yield return new WaitForSeconds(10);
+
+        winText.SetActive(false);
     }
 }
